@@ -6,6 +6,8 @@ def main():
     while True:
         sys.stdout.write("$ ")
         command = input()
+        if command.strip() == "exit 0":
+            break
         print(f"{command}: command not found")
 
 if __name__ == "__main__":
