@@ -8,7 +8,10 @@ def main():
         command = input()
         if command.strip() == "exit 0":
             break
-        print(f"{command}: command not found")
+        elif command.strip().startswith("echo "):
+            print(command.strip()[5:])
+        else:
+            print(f"{command}: command not found")
 
 if __name__ == "__main__":
     main()
