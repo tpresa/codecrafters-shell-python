@@ -12,8 +12,10 @@ def main():
             print(command.strip()[5:])
         elif command.strip().startswith("type "):
             args = command.strip()[5:]
-            if (args == "exit") || (args == "type") || (args == "echo")
-                print(args + "is a shell builtin")
+            if (args == "exit") or (args == "type") or (args == "echo"):
+                print(args + " is a shell builtin")
+            else:
+                print(args + ": not found")
         else:
             print(f"{command}: command not found")
 
