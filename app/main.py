@@ -1,7 +1,21 @@
 import sys
-
+import os
 
 def main():
+
+    path_envvar = os.environ["PATH"]
+    path_list = path_envvar.split(":")
+
+    map = {}
+    for path in path_list:
+        try:
+            files = os.listdir(path)
+        except:
+            continue
+        for file in files:
+            full_path = path + "/" + file
+            if os.access(full_path, os.X_OK):
+                map[file] = full_path
     # Wait for user input
     while True:
         sys.stdout.write("$ ")
@@ -15,7 +29,10 @@ def main():
             if (args == "exit") or (args == "type") or (args == "echo"):
                 print(args + " is a shell builtin")
             else:
-                print(args + ": not found")
+                if args in map:
+                    print(args + " is " + map[args])
+                else:
+                    print(args + ": not found")
         else:
             print(f"{command}: command not found")
 
