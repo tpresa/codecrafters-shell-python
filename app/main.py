@@ -2,6 +2,8 @@ import sys
 import os
 import subprocess
 
+WORKING_DIR = '/app'
+
 def main():
 
     path_envvar = os.environ["PATH"]
@@ -27,13 +29,15 @@ def main():
             print(command.strip()[5:])
         elif command.strip().startswith("type "):
             args = command.strip()[5:]
-            if (args == "exit") or (args == "type") or (args == "echo"):
+            if (args == "exit") or (args == "type") or (args == "echo") or (args == "pwd"):
                 print(args + " is a shell builtin")
             else:
                 if args in map:
                     print(args + " is " + map[args])
                 else:
                     print(args + ": not found")
+        elif command.strip().startswith("pwd"):
+            print(WORKING_DIR)
         else:            
             args = command.split(" ")
 
