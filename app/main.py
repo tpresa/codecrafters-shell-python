@@ -2,10 +2,10 @@ import sys
 import os
 import subprocess
 
-WORKING_DIR = '/app'
 
 def main():
 
+    WORKING_DIR = '/app'
     path_envvar = os.environ["PATH"]
     path_list = path_envvar.split(":")
 
@@ -38,6 +38,13 @@ def main():
                     print(args + ": not found")
         elif command.strip().startswith("pwd"):
             print(WORKING_DIR)
+        elif command.strip().startswith("cd "):
+            args = command.split(" ")
+            if os.path.isdir(args[1]):
+                WORKING_DIR = args[1]
+            else:
+                print("cd: " + args[1] + ": No such file or directory")
+
         else:            
             args = command.split(" ")
 
