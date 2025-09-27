@@ -1,5 +1,6 @@
 import sys
 import os
+import subprocess
 
 def main():
 
@@ -33,8 +34,14 @@ def main():
                     print(args + " is " + map[args])
                 else:
                     print(args + ": not found")
-        else:
-            print(f"{command}: command not found")
+        else:            
+            args = command.split(" ")
+
+            if args[0] in map:
+                # args[0] = map[args[0]]
+                subprocess.run(args)
+            else:
+                print(f"{command}: command not found")
 
 if __name__ == "__main__":
     main()
