@@ -29,7 +29,7 @@ def main():
             print(command.strip()[5:])
         elif command.strip().startswith("type "):
             args = command.strip()[5:]
-            if (args == "exit") or (args == "type") or (args == "echo") or (args == "pwd"):
+            if (args == "exit") or (args == "type") or (args == "echo") or (args == "pwd") or (args == "cd"):
                 print(args + " is a shell builtin")
             else:
                 if args in map:
@@ -40,8 +40,22 @@ def main():
             print(WORKING_DIR)
         elif command.strip().startswith("cd "):
             args = command.split(" ")
-            if os.path.isdir(args[1]):
-                WORKING_DIR = args[1]
+            path = args[1]
+
+            # Expand ~ to home directory if needed
+            if path.startswith("~"):
+                path = os.path.expanduser(path)
+
+            # If relative path, resolve against WORKING_DIR
+            if not path.startswith("/"):
+                path = os.path.join(WORKING_DIR, path)
+
+            # Normalize the path
+            path = os.path.normpath(path)
+
+            # Check if directory exists and update WORKING_DIR
+            if os.path.isdir(path):
+                WORKING_DIR = path
             else:
                 print("cd: " + args[1] + ": No such file or directory")
 
