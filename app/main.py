@@ -84,6 +84,32 @@ def isdir(path):
         return False
 
 
+def parse_command(command):
+    """Parse command respecting single quotes"""
+    tokens = []
+    current_token = ""
+    in_quotes = False
+
+    for char in command:
+        if char == "'":
+            in_quotes = not in_quotes
+        elif char == " ":
+            if in_quotes:
+                current_token += char
+            else:
+                if current_token:
+                    tokens.append(current_token)
+                    current_token = ""
+        else:
+            current_token += char
+
+    # Don't forget the last token
+    if current_token:
+        tokens.append(current_token)
+
+    return tokens
+
+
 def main():
 
     WORKING_DIR = '/app'
@@ -107,20 +133,26 @@ def main():
         if command.strip() == "exit 0":
             break
         elif command.strip().startswith("echo "):
-            print(command.strip()[5:])
-        elif command.strip().startswith("type "):
-            args = command.strip()[5:]
-            if (args == "exit") or (args == "type") or (args == "echo") or (args == "pwd") or (args == "cd"):
-                print(args + " is a shell builtin")
+            args = parse_command(command.strip())
+            if len(args) > 1:
+                print(" ".join(args[1:]))
             else:
-                if args in map:
-                    print(args + " is " + map[args])
+                print()
+        elif command.strip().startswith("type "):
+            args = parse_command(command.strip())
+            if len(args) > 1:
+                cmd_name = args[1]
+                if (cmd_name == "exit") or (cmd_name == "type") or (cmd_name == "echo") or (cmd_name == "pwd") or (cmd_name == "cd"):
+                    print(cmd_name + " is a shell builtin")
                 else:
-                    print(args + ": not found")
+                    if cmd_name in map:
+                        print(cmd_name + " is " + map[cmd_name])
+                    else:
+                        print(cmd_name + ": not found")
         elif command.strip().startswith("pwd"):
             print(WORKING_DIR)
         elif command.strip().startswith("cd "):
-            args = command.split(" ")
+            args = parse_command(command)
             path = args[1]
 
             # Expand ~ to home directory if needed
@@ -140,8 +172,8 @@ def main():
             else:
                 print("cd: " + args[1] + ": No such file or directory")
 
-        else:            
-            args = command.split(" ")
+        else:
+            args = parse_command(command)
 
             if args[0] in map:
                 # args[0] = map[args[0]]
